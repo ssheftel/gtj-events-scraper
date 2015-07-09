@@ -1,7 +1,11 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+""""""
+
 import setuptools
 
 setuptools.setup(
-    name="gtj-events-scraper",
+    name="gtjevents",
     version="0.1.0",
     url="https://github.com/ssheftel/gtj-events-scraper.git",
 
@@ -18,9 +22,8 @@ setuptools.setup(
     classifiers=[
         'Development Status :: 2 - Pre-Alpha',
         'Programming Language :: Python',
-        'Programming Language :: Python :: 2',
-        'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3.3',
+        'Programming Language :: Python :: 3.4',
     ],
 )
