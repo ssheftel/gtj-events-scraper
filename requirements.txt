@@ -1,4 +1,8 @@
+beautifulsoup4==4.4.0
 foo==0.0
--e git+https://github.com/ssheftel/gtj-events-scraper.git@6ff17b24a0ccc1d623e864e3e4c9986659a40914#egg=gtjevents-master
+gnureadline==6.3.3
+-e git+https://github.com/ssheftel/gtj-events-scraper.git@a4a385ae8f8e77931eb26c86495be15438bfb83a#egg=gtjevents-master
+ipython==3.2.0
 py==1.4.30
 pytest==2.7.2
+requests==2.7.0
