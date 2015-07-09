@@ -1,3 +1,4 @@
 foo==0.0
+-e git+https://github.com/ssheftel/gtj-events-scraper.git@6ff17b24a0ccc1d623e864e3e4c9986659a40914#egg=gtjevents-master
 py==1.4.30
 pytest==2.7.2

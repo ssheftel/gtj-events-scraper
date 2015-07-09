@@ -2,10 +2,8 @@
 # -*- coding: utf-8 -*-
 """"""
 
-import gtjevents
+from gtjevents import event_scraper
 
-def func(x):
-	return x+1
 
-def test_answer():
-	assert event_scraper.bob() == 'hi'
+def test_scrap_has_src_prop():
+	assert event_scraper.EventScraper('hi').src == 'hi'
