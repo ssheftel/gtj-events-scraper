@@ -184,6 +184,8 @@ class EventScraper(object):
     organizers_website_url = organizers_website_url_tag.get('href', '')
     return organizers_website_url
 
+  ###venue###
+
   @property
   def venue(self):
     """venue name from venue section"""
