@@ -3,8 +3,19 @@
 """Loads up tests data for use in tests"""
 
 import os
+import sys
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
+import page
 
-TESTDATADIR = os.path.abspath(os.path.dirname(__file__))
-with open(os.path.join(TESTDATADIR, 'event-1.html'), 'r') as f:
-	event_1 = f.read()
+TEST_DATA_DIR = os.path.abspath(os.path.dirname(__file__))
+EVENT_FILES = ['page-1.html']
 
+class TestData(object):
+  def __init__(self, files):
+    for (i, file_name) in enumerate(files):
+      file_type = file_name[:file_name.find('-')]
+      prop_name = '{file_type}_{index}'.format(file_type=file_type, index=i+1)
+      pg = page.GtjPage.fromFile(os.path.join(TEST_DATA_DIR, file_name))
+      setattr(self, prop_name, pg)
+
+td = TestData(EVENT_FILES)
