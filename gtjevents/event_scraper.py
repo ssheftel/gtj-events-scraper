@@ -11,6 +11,9 @@ class EventScraper(object):
     self._page = page
     self.url = page.location
     self.sp = bs(page.main_content)
+    self._details_section = self.sp.select_one('div.tribe-events-meta-group.tribe-events-meta-group-details')
+    self._organizer_section = self.sp.select_one('div.tribe-events-meta-group.tribe-events-meta-group-organizer')
+    self._venue_section = self.sp.select_one('div.tribe-events-meta-group.tribe-events-meta-group-venue')
 
   def __repr__(self):
     """repr() TODO: """
@@ -89,6 +92,212 @@ class EventScraper(object):
     if not descript_tag: return ''
     description = descript_tag.text.strip().replace('\n', ' ')
     return description
+
+  ###details###
+
+  @property
+  def event_website_url(self):
+    """event_url from event details"""
+    if not self._details_section: return ''
+    event_website_url_tag = self._details_section.select_one('dd.tribe-events-event-url a')
+    if not event_website_url_tag: return ''
+    event_website_url = event_website_url_tag.get('href', '')
+    return event_website_url
+
+  @property
+  def tags(self):
+    """event tags from details section TODO: test page with tags"""
+    tags = []
+    if not self._details_section: return tags
+    tags_ancor_tags = self._details_section.select('dd.tribe-event-tags a[href^="http://www.gatherthejews.com/tag/"]')
+    if not tags_ancor_tags: return tags
+    for tags_ancor_tag in tags_ancor_tags:
+      tags.append(tags_ancor_tag.text().strip())
+    return tags
+
+  @property
+  def cost(self):
+    """event cost from details section - not store as string not int"""
+    cost = ''
+    if not self._details_section: return cost
+    cost_tag = self._details_section.select_one('dd.tribe-events-event-cost')
+    if not cost_tag: return cost
+    cost = cost_tag.text.strip()
+    return cost
+
+  @property
+  def start_date(self):
+    """event start data and time - TODO: implement"""
+    pass
+
+  @property
+  def end_date(self):
+    """event end data and time - TODO: implement"""
+    pass
+
+  ###organizers###
+
+  @property
+  def organizer(self):
+    """the name of the organization sponsoring the event - from organizer section"""
+    if not self._organizer_section: return ''
+    organizer_tag = self._organizer_section.select_one('dd.fn.org a')
+    if not organizer_tag: return ''
+    organizer = organizer_tag.text.strip()
+    return organizer
+
+  @property
+  def organizers_profile_url(self):
+    """organizers gtj profile page url from the organizer section"""
+    if not self._organizer_section: return ''
+    organizers_profile_url_tag = self._organizer_section.select_one('dd.fn.org a')
+    if not organizers_profile_url_tag: return ''
+    organizers_profile_url = organizers_profile_url_tag.get('href', '')
+    return organizers_profile_url
+
+
+  @property
+  def organizers_phone(self):
+    """organizers phone number from the organizer section - string"""
+    if not self._organizer_section: return ''
+    organizers_phone_tag = self._organizer_section.select_one('dd.tel')
+    if not organizers_phone_tag: return ''
+    organizers_phone = organizers_phone_tag.text.strip()
+    return organizers_phone
+
+  @property
+  def organizers_email(self):
+    """organizers email url from the organizer section"""
+    if not self._organizer_section: return ''
+    organizers_email_tag = self._organizer_section.select_one('dd.email')
+    if not organizers_email_tag: return ''
+    organizers_email = organizers_email_tag.text.strip()
+    return organizers_email
+
+
+  @property
+  def organizers_website_url(self):
+    """organizers website url from the organizer section"""
+    if not self._organizer_section: return ''
+    organizers_website_url_tag = self._organizer_section.select_one('dd.url a')
+    if not organizers_website_url_tag: return ''
+    organizers_website_url = organizers_website_url_tag.get('href', '')
+    return organizers_website_url
+
+  @property
+  def venue(self):
+    """venue name from venue section"""
+    if not self._venue_section: return ''
+    venue_tag = self._venue_section.select_one('dd.author.fn.org a')
+    if not venue_tag: return ''
+    venue = venue_tag.text.strip()
+    return venue
+
+  @property
+  def venue_url(self):
+    """venue url attached to the venue name from venue section"""
+    if not self._venue_section: return ''
+    venue_url_tag = self._venue_section.select_one('dd.author.fn.org a')
+    if not venue_url_tag: return ''
+    venue_url = venue_url_tag.get('href', '')
+    return venue_url
+
+  @property
+  def venue_website_url(self):
+    """? venues website url ? - not sure how this differes from venue_url"""
+    if not self._venue_section: return ''
+    venue_website_url_tag = self._venue_section.select_one('dd.url a')
+    if not venue_website_url_tag: return ''
+    venue_website_url = venue_website_url_tag.get('href', '')
+    return venue_website_url
+
+  @property
+  def venue_phone(self):
+    """phone number of the venue from the venue section"""
+    if not self._venue_section: return ''
+    venue_phone_tag = self._venue_section.select_one('dd.tel')
+    if not venue_phone_tag: return ''
+    venue_phone = venue_phone_tag.text.strip()
+    return venue_phone
+
+  @property
+  def gmap_url(self):
+    """google maps link url from venue section"""
+    if not self._venue_section: return ''
+    gmap_url_tag = self._venue_section.select_one('dd.location a.tribe-events-gmap')
+    if not gmap_url_tag: return ''
+    gmap_url = gmap_url_tag.get('href', '')
+    return gmap_url
+
+  @property
+  def address(self):
+    """venue full text address"""
+    if not self._venue_section: return ''
+    address_tag = self._venue_section.select_one('dd.location address.tribe-events-address')
+    if not address_tag: return ''
+    address = address_tag.text.strip()
+    return address
+
+  @property
+  def street(self):
+    """street portion of the address from venue section"""
+    if not self._venue_section: return ''
+    street_tag = self._venue_section.select_one('dd.location address.tribe-events-address .street-address')
+    if not street_tag: return ''
+    street = street_tag.text.strip()
+    return street
+
+  @property
+  def city(self):
+    """city portion of the address from venue section"""
+    if not self._venue_section: return ''
+    city_tag = self._venue_section.select_one('dd.location address.tribe-events-address .locality')
+    if not city_tag: return ''
+    city = city_tag.text.strip()
+    return city
+
+  @property
+  def state(self):
+    """state portion of the address from venue section"""
+    if not self._venue_section: return ''
+    state_tag = self._venue_section.select_one('dd.location address.tribe-events-address .region.tribe-events-abbr')
+    if not state_tag: return ''
+    state = state_tag.text.strip()
+    return state
+
+  @property
+  def zip(self):
+    """zip code/postal code of the addess from venue section"""
+    if not self._venue_section: return ''
+    zip_tag = self._venue_section.select_one('dd.location address.tribe-events-address .postal-code')
+    if not zip_tag: return ''
+    zip = zip_tag.text.strip()
+    return zip
+
+  @property
+  def country(self):
+    """country section of the address from the venue section"""
+    if not self._venue_section: return ''
+    country_tag = self._venue_section.select_one('dd.location address.tribe-events-address .country-name')
+    if not country_tag: return ''
+    country = country_tag.text.strip()
+    return country
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
