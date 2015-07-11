@@ -7,7 +7,7 @@
 #Requirements
 
 #Tests
-- `py.test gtjevents`
+- `cd gtjevents && ptw`
 
 #Authors
 `gtj-events-scraper` was written by Sam Getz Sheftel

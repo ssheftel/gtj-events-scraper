@@ -26,5 +26,12 @@ def test_scrap_post_id():
 def test_scrap_has_thumbnail():
   assert scrap_1.has_thumbnail == True
 
+def test_category_classes():
+  assert scrap_1.category_classes == ['prayer', 'reform', 'shabbat']
 
+def test_description_html():
+  assert scrap_1.descript_html == b'<p>Shabbat Under the Stars is a casual, outdoor service held at Washington Hebrew Congregation during June, July, and August. It is more relaxed in feel than traditional Shabbat services, features upbeat music, and offers worshippers the option of staying for an informal, family-style dinner afterward.</p>\n<p>The cost for dinner is $12 per person or $30 for a family of up to four people.</p>'
+
+def test_description_text():
+  assert scrap_1.description == 'Shabbat Under the Stars is a casual, outdoor service held at Washington Hebrew Congregation during June, July, and August. It is more relaxed in feel than traditional Shabbat services, features upbeat music, and offers worshippers the option of staying for an informal, family-style dinner afterward. The cost for dinner is $12 per person or $30 for a family of up to four people.'
 
