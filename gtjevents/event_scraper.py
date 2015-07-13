@@ -4,8 +4,14 @@
 
 from bs4 import BeautifulSoup as bs
 import re
+from dateutil import tz
+from arrow import Arrow
 
 class EventScraper(object):
+  gcal_url_date_time_pattern = re.compile('(?:dates=)([\dT]+)\/([\dT]+)(?:&)')
+  gcal_url_date_time_format = '%Y%m%dT%H%M%S' # example: 20150724T180000
+  event_timezone = tz.gettz('US/Eastern')
+  output_date_str_format = '%Y-%m-%dT%H:%M:%S.%fZ' # same as by mongo
   def __init__(self, page):
     """"""
     self._page = page
@@ -14,6 +20,9 @@ class EventScraper(object):
     self._details_section = self.sp.select_one('div.tribe-events-meta-group.tribe-events-meta-group-details')
     self._organizer_section = self.sp.select_one('div.tribe-events-meta-group.tribe-events-meta-group-organizer')
     self._venue_section = self.sp.select_one('div.tribe-events-meta-group.tribe-events-meta-group-venue')
+    self._gcal_url = None
+    self._start_date_arrow = None
+    self._end_date_arrow = None
 
   def __repr__(self):
     """repr() TODO: """
@@ -33,24 +42,69 @@ class EventScraper(object):
     if not image_tag: return ''
     return image_tag.get('src', '')
 
+  def _process_gcal_url(self):
+    """private method for setting/cacheing the _gcal_url"""
+    gcal_tag = self.sp.select_one('.tribe-events-cal-links a.tribe-events-gcal')
+    if not gcal_tag:
+      self._gcal_url = ''
+    else:
+      self._gcal_url = gcal_tag.get('href', '')
+
+
+
   @property
   def gcal_url(self):
-      """get gcal url"""
-      gcal_tag = self.sp.select_one('.tribe-events-cal-links a.tribe-events-gcal')
-      if not gcal_tag: return ''
-      return gcal_tag.get('href', '')
+    """get gcal url - either from cached _gcal_url or extracts"""
+    if self._gcal_url != None: return self._gcal_url
+    self._process_gcal_url()
+    return self._gcal_url
+
+  def _process_dates(self):
+    """internal method to parse the gcal_url for start and end date info and
+      set the _start_date_arrow and _end_date_arrow to instances of arrow objs
+    """
+    #dont rerun if _start_date_arrow or _end_date_arrow is set or if gcal_url not found
+    if (self._start_date_arrow or self._end_date_arrow) or not self.gcal_url: return
+    gcal_url = self.gcal_url
+    gcal_url_date_time_match = self.gcal_url_date_time_pattern.search(gcal_url)
+    if not gcal_url_date_time_match: return
+    (gcal_url_start_date_str, gcal_url_end_date_str) = gcal_url_date_time_match.groups()
+    # add time to date if no time spesified
+    if 'T' not in gcal_url_start_date_str: gcal_url_start_date_str += 'T000000'
+    if 'T' not in gcal_url_end_date_str: gcal_url_end_date_str += 'T000000'
+    self._start_date_arrow = Arrow.strptime(gcal_url_start_date_str, self.gcal_url_date_time_format, tzinfo=self.event_timezone)
+    self._end_date_arrow = Arrow.strptime(gcal_url_end_date_str, self.gcal_url_date_time_format, tzinfo=self.event_timezone)
+
+  def _arrow_date_formatter(self, arrow):
+    """private method used to convert internal arrow date obj into date values"""
+    return arrow.to('utc').strftime(self.output_date_str_format)
+
+  @property
+  def start_date(self):
+    """start date time - datetime obj parsed from gcal_url"""
+    self._process_dates()
+    if self._start_date_arrow == None: return None
+    return self._arrow_date_formatter(self._start_date_arrow)
+
+
+  @property
+  def end_date(self):
+    """end date time - datetime obj parsed from gcal_url"""
+    self._process_dates()
+    if self._end_date_arrow == None: return None
+    return self._arrow_date_formatter(self._end_date_arrow)
 
   @property
   def post_id(self):
-      """gets the post-id from main content id or None"""
-      post_id_tag_pattern = re.compile('^post-(?P<post_id>[1-9]\d*)')
-      post_id_tag = self.sp.find('div', {'id': post_id_tag_pattern})
-      if not post_id_tag: return None
-      tag_id = post_id_tag.get('id')
-      post_id = post_id_tag_pattern.match(tag_id).groupdict().get('post_id', 0)
-      if not post_id: return None
-      post_id = int(post_id)
-      return post_id
+    """gets the post-id from main content id or None"""
+    post_id_tag_pattern = re.compile('^post-(?P<post_id>[1-9]\d*)')
+    post_id_tag = self.sp.find('div', {'id': post_id_tag_pattern})
+    if not post_id_tag: return None
+    tag_id = post_id_tag.get('id')
+    post_id = post_id_tag_pattern.match(tag_id).groupdict().get('post_id', 0)
+    if not post_id: return None
+    post_id = int(post_id)
+    return post_id
 
   @property
   def has_thumbnail(self):
@@ -92,6 +146,14 @@ class EventScraper(object):
     if not descript_tag: return ''
     description = descript_tag.text.strip().replace('\n', ' ')
     return description
+
+  @property
+  def facebook_event_url(self):
+    """facebook event url - global search"""
+    facebook_event_url_tag = self.sp.select_one('a[href^="https://www.facebook.com/events"]')
+    if not facebook_event_url_tag: return ''
+    facebook_event_url = facebook_event_url_tag.get('href', '')
+    return facebook_event_url
 
   ###details###
 

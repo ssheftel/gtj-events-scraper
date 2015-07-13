@@ -25,6 +25,19 @@ def test_scrap_get_event_image():
 def test_scrap_gcal_url():
   assert scrap_1.gcal_url == 'http://www.google.com/calendar/event?action=TEMPLATE&text=Shabbat+Under+the+Stars&dates=20150724T180000/20150724T200000&details=%3Cp%3EShabbat+Under+the+Stars+is+a+casual%2C+outdoor+service+held+at+Washington+Hebrew+Congregation+during+June%2C+July%2C+and+August.+It+is+more+relaxed+in+feel+than+traditional+Shabbat+services%2C+features+upbeat+music%2C+and+offers+worshippers+the+option+of+staying+for+an+informal%2C+family-style+dinner+afterward.%3C%2Fp%3E%3Cp%3EThe+cost+for+dinner+is+%2412+per+person+or+%2430+for+a+family+of+up+to+four+people.%3C%2Fp%3E&location=11810+Falls+Road+%2C+Potomac%2C+MD%2C+20854%2C+United+States&sprop=website:http://www.gatherthejews.com&trp=false'
 
+def test_private_process_dates():
+  assert scrap_1._start_date_arrow == None
+  assert scrap_1._end_date_arrow == None
+  scrap_1._process_dates()
+  assert scrap_1._start_date_arrow.timestamp == 1437775200
+  assert scrap_1._end_date_arrow.timestamp == 1437782400
+
+def test_start_date():
+  assert scrap_1.start_date == '2015-07-24T22:00:00.000000Z'
+
+def test_end_date():
+  assert scrap_1.end_date == '2015-07-25T00:00:00.000000Z'
+
 def test_scrap_post_id():
   assert scrap_1.post_id == 73096
 
@@ -40,6 +53,9 @@ def test_description_html():
 def test_description_text():
   assert scrap_1.description == 'Shabbat Under the Stars is a casual, outdoor service held at Washington Hebrew Congregation during June, July, and August. It is more relaxed in feel than traditional Shabbat services, features upbeat music, and offers worshippers the option of staying for an informal, family-style dinner afterward. The cost for dinner is $12 per person or $30 for a family of up to four people.'
 
+def test_facebook_event_url():
+  """TODO: test event with facebook event link"""
+  assert scrap_1.facebook_event_url == ''
 def test_event_url():
   assert scrap_1.event_website_url == 'http://www.whctemple.org/SUTS'
 
