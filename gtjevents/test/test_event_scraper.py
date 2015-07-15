@@ -19,6 +19,9 @@ def test_subsections():
 def test_scrap_get_title():
   assert scrap_1.title == 'Shabbat Under the Stars'
 
+def test_scrap_hash():
+  assert scrap_1.hash == scrap_1._page.hash
+
 def test_scrap_get_event_image():
   assert scrap_1.image_url == 'http://www.gatherthejews.com/wp-content/uploads/2015/05/SUTS3.jpg'
 
@@ -129,6 +132,7 @@ def test_geo():
 def test_todict():
   test_dict = {
     "url": scrap_1.url,
+    "hash": scrap_1.hash,
     "title": scrap_1.title,
     "image_url": scrap_1.image_url,
     "gcal_url": scrap_1.gcal_url,

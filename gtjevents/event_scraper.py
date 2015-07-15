@@ -18,6 +18,7 @@ class EventScraper(object):
   def __init__(self, page):
     """"""
     self._page = page
+    self.hash = page.hash
     self.url = page.location
     self.sp = bs(page.main_content)
     self._details_section = self.sp.select_one('div.tribe-events-meta-group.tribe-events-meta-group-details')
@@ -355,6 +356,7 @@ class EventScraper(object):
   def todict(self):
     d = {
       "url": self.url,
+      "hash": self.hash,
       "title": self.title,
       "image_url": self.image_url,
       "gcal_url": self.gcal_url,
