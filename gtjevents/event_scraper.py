@@ -190,16 +190,6 @@ class EventScraper(object):
     cost = cost_tag.text.strip()
     return cost
 
-  @property
-  def start_date(self):
-    """event start data and time - TODO: implement"""
-    pass
-
-  @property
-  def end_date(self):
-    """event end data and time - TODO: implement"""
-    pass
-
   ###organizers###
 
   @property
@@ -361,6 +351,43 @@ class EventScraper(object):
     if not geopy_location: return None
     mongo_point_dict = {"type": "Point", "coordinates": [geopy_location.longitude, geopy_location.latitude]}
     return mongo_point_dict
+
+  def todict(self):
+    d = {
+      "url": self.url,
+      "title": self.title,
+      "image_url": self.image_url,
+      "gcal_url": self.gcal_url,
+      "start_date": self.start_date,
+      "end_date": self.end_date,
+      "post_id": self.post_id,
+      "has_thumbnail": self.has_thumbnail,
+      "category_classes": self.category_classes,
+      "descript_html": self.descript_html,
+      "description": self.description,
+      "facebook_event_url": self.facebook_event_url,
+      "event_website_url": self.event_website_url,
+      "tags": self.tags,
+      "cost": self.cost,
+      "organizer": self.organizer,
+      "organizers_profile_url": self.organizers_profile_url,
+      "organizers_phone": self.organizers_phone,
+      "organizers_email": self.organizers_email,
+      "organizers_website_url": self.organizers_website_url,
+      "venue": self.venue,
+      "venue_url": self.venue_url,
+      "venue_website_url": self.venue_website_url,
+      "venue_phone": self.venue_phone,
+      "gmap_url": self.gmap_url,
+      "address": self.address,
+      "street": self.street,
+      "city": self.city,
+      "state": self.state,
+      "zip": self.zip,
+      "country": self.country,
+      "geo": self.geo
+    }
+    return d
 
 
 

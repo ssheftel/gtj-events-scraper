@@ -125,3 +125,40 @@ def test_country():
 
 def test_geo():
   assert scrap_1.geo == {'coordinates': [-77.1900311, 39.0506456], 'type': 'Point'}
+
+def test_todict():
+  test_dict = {
+    "url": scrap_1.url,
+    "title": scrap_1.title,
+    "image_url": scrap_1.image_url,
+    "gcal_url": scrap_1.gcal_url,
+    "start_date": scrap_1.start_date,
+    "end_date": scrap_1.end_date,
+    "post_id": scrap_1.post_id,
+    "has_thumbnail": scrap_1.has_thumbnail,
+    "category_classes": scrap_1.category_classes,
+    "descript_html": scrap_1.descript_html,
+    "description": scrap_1.description,
+    "facebook_event_url": scrap_1.facebook_event_url,
+    "event_website_url": scrap_1.event_website_url,
+    "tags": scrap_1.tags,
+    "cost": scrap_1.cost,
+    "organizer": scrap_1.organizer,
+    "organizers_profile_url": scrap_1.organizers_profile_url,
+    "organizers_phone": scrap_1.organizers_phone,
+    "organizers_email": scrap_1.organizers_email,
+    "organizers_website_url": scrap_1.organizers_website_url,
+    "venue": scrap_1.venue,
+    "venue_url": scrap_1.venue_url,
+    "venue_website_url": scrap_1.venue_website_url,
+    "venue_phone": scrap_1.venue_phone,
+    "gmap_url": scrap_1.gmap_url,
+    "address": scrap_1.address,
+    "street": scrap_1.street,
+    "city": scrap_1.city,
+    "state": scrap_1.state,
+    "zip": scrap_1.zip,
+    "country": scrap_1.country,
+    "geo": scrap_1.geo
+  }
+  assert scrap_1.todict() == test_dict
