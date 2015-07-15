@@ -6,12 +6,15 @@ from bs4 import BeautifulSoup as bs
 import re
 from dateutil import tz
 from arrow import Arrow
+from .geolookup import GoogleMapsGeoLookup
 
 class EventScraper(object):
   gcal_url_date_time_pattern = re.compile('(?:dates=)([\dT]+)\/([\dT]+)(?:&)')
   gcal_url_date_time_format = '%Y%m%dT%H%M%S' # example: 20150724T180000
   event_timezone = tz.gettz('US/Eastern')
   output_date_str_format = '%Y-%m-%dT%H:%M:%S.%fZ' # same as by mongo
+  geo_lookup = GoogleMapsGeoLookup()
+
   def __init__(self, page):
     """"""
     self._page = page
@@ -346,6 +349,18 @@ class EventScraper(object):
     if not country_tag: return ''
     country = country_tag.text.strip()
     return country
+
+  @property
+  def geo(self):
+    """returns longitude and latitude using eve's/mongodb geo point format
+    geo: {"type":"Point","coordinates":[100.0,10.0]}
+    """
+    address = self.address
+    if not address: return None
+    geopy_location = self.geo_lookup(address)
+    if not geopy_location: return None
+    mongo_point_dict = {"type": "Point", "coordinates": [geopy_location.longitude, geopy_location.latitude]}
+    return mongo_point_dict
 
 
 

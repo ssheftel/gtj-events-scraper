@@ -122,3 +122,6 @@ def test_zip():
 
 def test_country():
   assert scrap_1.country == 'United States'
+
+def test_geo():
+  assert scrap_1.geo == {'coordinates': [-77.1900311, 39.0506456], 'type': 'Point'}
