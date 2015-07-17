@@ -50,9 +50,6 @@ def test_scrap_has_thumbnail():
 def test_category_classes():
   assert scrap_1.category_classes == ['prayer', 'reform', 'shabbat']
 
-def test_description_html():
-  assert scrap_1.descript_html == b'<p>Shabbat Under the Stars is a casual, outdoor service held at Washington Hebrew Congregation during June, July, and August. It is more relaxed in feel than traditional Shabbat services, features upbeat music, and offers worshippers the option of staying for an informal, family-style dinner afterward.</p>\n<p>The cost for dinner is $12 per person or $30 for a family of up to four people.</p>'
-
 def test_description_text():
   assert scrap_1.description == 'Shabbat Under the Stars is a casual, outdoor service held at Washington Hebrew Congregation during June, July, and August. It is more relaxed in feel than traditional Shabbat services, features upbeat music, and offers worshippers the option of staying for an informal, family-style dinner afterward. The cost for dinner is $12 per person or $30 for a family of up to four people.'
 
@@ -141,7 +138,6 @@ def test_todict():
     "post_id": scrap_1.post_id,
     "has_thumbnail": scrap_1.has_thumbnail,
     "category_classes": scrap_1.category_classes,
-    "descript_html": scrap_1.descript_html,
     "description": scrap_1.description,
     "facebook_event_url": scrap_1.facebook_event_url,
     "event_website_url": scrap_1.event_website_url,

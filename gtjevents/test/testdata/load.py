@@ -17,5 +17,9 @@ class TestData(object):
       prop_name = '{file_type}_{index}'.format(file_type=file_type, index=i+1)
       pg = page.GtjPage.fromFile(os.path.join(TEST_DATA_DIR, file_name))
       setattr(self, prop_name, pg)
+    #TODO: Clean up
+    with open(os.path.abspath(os.path.join(os.path.dirname(__file__), 'calendar-1.html')), 'r') as f:
+      self.cal_page_1 = f.read()
+
 
 td = TestData(EVENT_FILES)

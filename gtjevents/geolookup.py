@@ -23,10 +23,11 @@ class GoogleMapsGeoLookup(object):
     time_elapsed_since_last_lookup = current_time - self.last_lookup_request
     if time_elapsed_since_last_lookup < self.min_lookup_timout:
       time.sleep(self.min_lookup_timout - time_elapsed_since_last_lookup)
+    #TODO handel timeout + add logging
     resp = self._googleV3.geocode(address)
     self.last_lookup_request = time.time()
     return resp
-  
+
   def __call__(self, address):
     """call to instance == isntance.geocode(address) returns a geopy.location.Location instance"""
     return self.geocode(address)

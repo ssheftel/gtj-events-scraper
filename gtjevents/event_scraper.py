@@ -136,14 +136,6 @@ class EventScraper(object):
     return category_classes
 
   @property
-  def descript_html(self):
-    """event description html source"""
-    descript_tag = self.sp.select_one('div.tribe-events-content.entry-content.description')
-    if not descript_tag: return ''
-    description_html = descript_tag.renderContents().strip()
-    return description_html
-
-  @property
   def description(self):
     """event descript plain text"""
     descript_tag = self.sp.select_one('div.tribe-events-content.entry-content.description')
@@ -348,6 +340,7 @@ class EventScraper(object):
     """
     address = self.address
     if not address: return None
+    # TODO: add Exception handeling
     geopy_location = self.geo_lookup(address)
     if not geopy_location: return None
     mongo_point_dict = {"type": "Point", "coordinates": [geopy_location.longitude, geopy_location.latitude]}
@@ -365,7 +358,6 @@ class EventScraper(object):
       "post_id": self.post_id,
       "has_thumbnail": self.has_thumbnail,
       "category_classes": self.category_classes,
-      "descript_html": self.descript_html,
       "description": self.description,
       "facebook_event_url": self.facebook_event_url,
       "event_website_url": self.event_website_url,
