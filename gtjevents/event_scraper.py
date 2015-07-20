@@ -7,6 +7,11 @@ import re
 from dateutil import tz
 from arrow import Arrow
 from .geolookup import GoogleMapsGeoLookup
+import logging
+from .page import Page, GtjPage
+
+logger = logging.getLogger('mainlog'+'.'+__name__)
+logger.info('Running EventScraper')
 
 class EventScraper(object):
   gcal_url_date_time_pattern = re.compile('(?:dates=)([\dT]+)\/([\dT]+)(?:&)')
@@ -15,15 +20,34 @@ class EventScraper(object):
   output_date_str_format = '%Y-%m-%dT%H:%M:%S.%fZ' # same as by mongo
   geo_lookup = GoogleMapsGeoLookup()
 
+  @classmethod
+  def from_url(cls, url):
+    """create a EventScrap Instance from a url"""
+    logger.info('createing EventScrap Instance from url %s', url)
+    page = GtjPage.fromUrl(url) # TODO: remove hardcoding GTJ Type
+    return cls(page)
+
+
   def __init__(self, page):
     """"""
+    logger.info('Instantating EventScraper for url %s and hash of %s', page.location, page.hash)
     self._page = page
     self.hash = page.hash
     self.url = page.location
     self.sp = bs(page.main_content)
-    self._details_section = self.sp.select_one('div.tribe-events-meta-group.tribe-events-meta-group-details')
-    self._organizer_section = self.sp.select_one('div.tribe-events-meta-group.tribe-events-meta-group-organizer')
-    self._venue_section = self.sp.select_one('div.tribe-events-meta-group.tribe-events-meta-group-venue')
+    self._all_sp = bs(page.html)
+    #self._details_section = self.sp.select_one('div.tribe-events-meta-group.tribe-events-meta-group-details')
+    self._details_section = self._all_sp.select_one('div.tribe-events-meta-group.tribe-events-meta-group-details')
+    #if not self._details_section:
+    #  self._details_section = self._all_sp.select_one('div.tribe-events-meta-group.tribe-events-meta-group-details')
+    #self._organizer_section = self.sp.select_one('div.tribe-events-meta-group.tribe-events-meta-group-organizer')
+    self._organizer_section = self._all_sp.select_one('div.tribe-events-meta-group.tribe-events-meta-group-organizer')
+    #if not self._organizer_section:
+    #  self._organizer_section = self._all_sp.select_one('div.tribe-events-meta-group.tribe-events-meta-group-organizer')
+    #self._venue_section = self.sp.select_one('div.tribe-events-meta-group.tribe-events-meta-group-venue')
+    self._venue_section = self._all_sp.select_one('div.tribe-events-meta-group.tribe-events-meta-group-venue')
+    #if not self._venue_section:
+    #  self._venue_section = self._all_sp.select_one('div.tribe-events-meta-group.tribe-events-meta-group-venue')
     self._gcal_url = None
     self._start_date_arrow = None
     self._end_date_arrow = None
@@ -346,7 +370,7 @@ class EventScraper(object):
     mongo_point_dict = {"type": "Point", "coordinates": [geopy_location.longitude, geopy_location.latitude]}
     return mongo_point_dict
 
-  def todict(self):
+  def to_dict(self):
     d = {
       "url": self.url,
       "hash": self.hash,
@@ -379,7 +403,8 @@ class EventScraper(object):
       "state": self.state,
       "zip": self.zip,
       "country": self.country,
-      "geo": self.geo
+      "geo": self.geo,
+      "source": "GTJ" # TODO: remove hard coding source
     }
     return d
 

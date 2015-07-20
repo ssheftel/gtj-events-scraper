@@ -6,6 +6,10 @@ import os
 import time
 from . import settings 
 from geopy.geocoders import GoogleV3
+import logging
+
+logger = logging.getLogger('mainlog'+'.'+__name__)
+logger.info('Running GoogleMapsGeoLookup')
 
 GOOGLE_GEOCODER_API_KEY = os.environ.get('GOOGLE_GEOCODER_API_KEY')
 
@@ -19,12 +23,16 @@ class GoogleMapsGeoLookup(object):
     geopy.location.Location has props: 
     address, altitude, latitude, longitude, point, raw
     """
+    logger.info('geocode looking up of %s', address)
     current_time = time.time()
     time_elapsed_since_last_lookup = current_time - self.last_lookup_request
     if time_elapsed_since_last_lookup < self.min_lookup_timout:
       time.sleep(self.min_lookup_timout - time_elapsed_since_last_lookup)
-    #TODO handel timeout + add logging
-    resp = self._googleV3.geocode(address)
+    try:
+      resp = self._googleV3.geocode(address)
+    except (Exception, e):
+      logger.warn('error while looking up geocode %s', address)
+      resp = None
     self.last_lookup_request = time.time()
     return resp
 

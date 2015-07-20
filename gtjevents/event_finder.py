@@ -5,6 +5,10 @@
 from bs4 import BeautifulSoup as bs
 import datetime
 import requests
+import logging
+
+logger = logging.getLogger('mainlog'+'.'+__name__)
+logger.info('Running GoogleMapsGeoLookup')
 
 gtj_event_link_selector = 'h3.tribe-events-month-event-title a.url'
 gtj_calendar_url_template = 'http://www.gatherthejews.com/calendar/{year}-{month:02d}/'
@@ -12,6 +16,7 @@ gtj_calendar_url_template = 'http://www.gatherthejews.com/calendar/{year}-{month
 
 def get_gtj_month_calander_event_links(month_calendar_html):
   """extracts event urls from gtj event month calendar - returns a set of urls"""
+  logger.info('extracting event links from calendar page html')
   event_urls = set()
   soup = bs(month_calendar_html)
   event_link_tags = soup.select(gtj_event_link_selector)
@@ -28,6 +33,7 @@ def get_gtj_event_urls_for_month(month, year):
   if not req or not req.text: return set
   month_calendar_html = req.text
   event_urls = get_gtj_month_calander_event_links(month_calendar_html)
+  logger.info('total of %s event urls extracted from calendar page at %s', len(event_urls), url)
   return event_urls
 
 def get_nth_month_and_year(nth_month):

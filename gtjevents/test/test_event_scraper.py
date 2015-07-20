@@ -126,7 +126,7 @@ def test_country():
 def test_geo():
   assert scrap_1.geo == {'coordinates': [-77.1900311, 39.0506456], 'type': 'Point'}
 
-def test_todict():
+def test_to_dict():
   test_dict = {
     "url": scrap_1.url,
     "hash": scrap_1.hash,
@@ -159,6 +159,7 @@ def test_todict():
     "state": scrap_1.state,
     "zip": scrap_1.zip,
     "country": scrap_1.country,
-    "geo": scrap_1.geo
+    "geo": scrap_1.geo,
+    "source": "GTJ"
   }
-  assert scrap_1.todict() == test_dict
+  assert scrap_1.to_dict() == test_dict
