@@ -36,18 +36,9 @@ class EventScraper(object):
     self.url = page.location
     self.sp = bs(page.main_content)
     self._all_sp = bs(page.html)
-    #self._details_section = self.sp.select_one('div.tribe-events-meta-group.tribe-events-meta-group-details')
     self._details_section = self._all_sp.select_one('div.tribe-events-meta-group.tribe-events-meta-group-details')
-    #if not self._details_section:
-    #  self._details_section = self._all_sp.select_one('div.tribe-events-meta-group.tribe-events-meta-group-details')
-    #self._organizer_section = self.sp.select_one('div.tribe-events-meta-group.tribe-events-meta-group-organizer')
     self._organizer_section = self._all_sp.select_one('div.tribe-events-meta-group.tribe-events-meta-group-organizer')
-    #if not self._organizer_section:
-    #  self._organizer_section = self._all_sp.select_one('div.tribe-events-meta-group.tribe-events-meta-group-organizer')
-    #self._venue_section = self.sp.select_one('div.tribe-events-meta-group.tribe-events-meta-group-venue')
     self._venue_section = self._all_sp.select_one('div.tribe-events-meta-group.tribe-events-meta-group-venue')
-    #if not self._venue_section:
-    #  self._venue_section = self._all_sp.select_one('div.tribe-events-meta-group.tribe-events-meta-group-venue')
     self._gcal_url = None
     self._start_date_arrow = None
     self._end_date_arrow = None
@@ -73,6 +64,8 @@ class EventScraper(object):
   def _process_gcal_url(self):
     """private method for setting/cacheing the _gcal_url"""
     gcal_tag = self.sp.select_one('.tribe-events-cal-links a.tribe-events-gcal')
+    if not gcal_tag:
+      gcal_tag = self._all_sp.select_one('.tribe-events-cal-links a.tribe-events-gcal')
     if not gcal_tag:
       self._gcal_url = ''
     else:
