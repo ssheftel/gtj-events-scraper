@@ -11,7 +11,8 @@ MODULES_DIR = os.path.abspath(os.path.dirname(__file__))
 PARENT_DIR = os.path.abspath(os.path.join(MODULES_DIR, '..'))
 ENV_FILE_PATH = os.path.abspath(os.path.join(PARENT_DIR, '.env'))
 
-load_dotenv(ENV_FILE_PATH)
+if os.path.isfile(ENV_FILE_PATH):
+  load_dotenv(ENV_FILE_PATH)
 
 
 logger = logging.getLogger('mainlog')
