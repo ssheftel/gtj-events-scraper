@@ -16,7 +16,7 @@ logger = logging.getLogger('mainlog'+'.'+__name__)
 logger.info('running run_worker')
 
 run_interval = int(os.environ.get('RUN_INTERVAL', 3))
-run_time_scale = os,environ.get('RUN_TIME_SCALE', 'HOURS') # or MINS
+run_time_scale = os.environ.get('RUN_TIME_SCALE', 'HOURS') # or MINS
 
 
 if run_time_scale == 'MINS':
