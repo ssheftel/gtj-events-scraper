@@ -40,3 +40,4 @@ nosetests.xml
 myenv
 *.sh
 .env
+.tmp_scripts

@@ -9,6 +9,7 @@ from arrow import Arrow
 from .geolookup import GoogleMapsGeoLookup
 import logging
 from .page import Page, GtjPage
+import hashlib
 
 logger = logging.getLogger('mainlog'+'.'+__name__)
 logger.info('Running EventScraper')
@@ -32,7 +33,6 @@ class EventScraper(object):
     """"""
     logger.info('Instantating EventScraper for url %s and hash of %s', page.location, page.hash)
     self._page = page
-    self.hash = page.hash
     self.url = page.location
     self.sp = bs(page.main_content)
     self._all_sp = bs(page.html)
@@ -46,6 +46,27 @@ class EventScraper(object):
   def __repr__(self):
     """repr() TODO: """
     return "EventScraper({})".format(repr(self._page.hash))
+
+  def _get_unequ_event_info_string(self):
+    """generates the string used to compute the hash value part of hashing fix"""
+    props = ['title', 'image_url', 'gcal_url', 'start_date', 'end_date', 'post_id', 'description', 'facebook_event_url', 'event_website_url', 'cost', 'organizer', 'organizers_profile_url', 'organizers_phone', 'organizers_email', 'organizers_website_url', 'venue', 'venue_url', 'venue_website_url', 'venue_phone', 'gmap_url', 'address']
+    unequ_str = b''
+    for prop in props:
+      unequ_str += str(getattr(self, prop, '')).encode('utf-8')
+    return unequ_str
+
+  def _compute_hash(self):
+    """private method wich computes the has value from the unequ_event_info_string using sha1"""
+    unequ_str = self._get_unequ_event_info_string()
+    hexdigest = hashlib.sha1(unequ_str).hexdigest()
+    return hexdigest
+
+  @property
+  def hash(self):
+    """hash"""
+    return self._compute_hash()
+
+
 
   @property
   def title(self):
@@ -397,6 +418,7 @@ class EventScraper(object):
       "zip": self.zip,
       "country": self.country,
       "geo": self.geo,
+      "unequ_event_info_string": self._get_unequ_event_info_string().decode('utf-8'), # added for debugging - remove later
       "source": "GTJ" # TODO: remove hard coding source
     }
     return d
