@@ -17,6 +17,7 @@ logger.info('running synchronize_events')
 
 DATA_SERVICE_EVENTS_URL = os.environ.get('DATA_SERVICE_EVENTS_URL')
 SYNCHRONIZE_NEXT_N_MONTHS = int(os.environ.get('SYNCHRONIZE_NEXT_N_MONTHS'))
+SCRAPER_AUTH_TOKEN = os.environ.get('SCRAPER_AUTH_TOKEN')
 
 def get_new_and_updated_events():
   """scrape the next n months calendard return dict with all updated new and 
@@ -58,7 +59,8 @@ def post_new_events(new_events_scraps):
   r = requests.post(
     DATA_SERVICE_EVENTS_URL,
     data=payload,
-    headers={'Content-Type': 'application/json'}
+    headers={'Content-Type': 'application/json'},
+    auth=(SCRAPER_AUTH_TOKEN,'')
   ) # add authentication
   if not r.ok:
     logger.error('Error while saving new events - post_new_events: %s, urls=%s', r.text, new_events_urls)
@@ -79,7 +81,8 @@ def update_existing_events(updated_events_dict):
     r = requests.patch(
       update_url,
       data=payload,
-      headers=headers
+      headers=headers,
+      auth=(SCRAPER_AUTH_TOKEN,'')
     )
     if not r.ok:
       logger.error('Error while updating event with _id= %s urls= %s', _id, update_url)

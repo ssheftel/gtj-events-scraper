@@ -15,6 +15,9 @@
 #Deploying
 - `git push heroku master`
 
+#Logs
+- `heroku logs --tail`
+
 TODOs
 
 - [x] Determine the email/account I will use for the app services*

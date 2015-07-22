@@ -4,7 +4,7 @@
 
 import os
 import time
-from . import settings 
+from . import settings
 from geopy.geocoders import GoogleV3
 import logging
 
