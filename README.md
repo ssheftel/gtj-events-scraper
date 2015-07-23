@@ -17,6 +17,7 @@
 
 #Logs
 - `heroku logs --tail`
+- `heroku logs -n 1500`
 
 TODOs
 
