@@ -23,14 +23,19 @@
 
 ##Agenda for GatherNow 2015-07-22
 
-- [ ] Bootstrap Ionic Project
-- [ ] Determin tab (code) structure + view
-- [ ] Determin event filter options and filter view
-- [ ] Create gtjnow generator fork for with coffeescript
-- [ ] Impmlent all events view 
+- [X] Bootstrap Ionic Project
+- [X] Determin tab (code) structure + view
+
+--------------------------------------------
+
+##Agenda for GatherNow 2015-07-22
+
+- [x] Update `cinstall.sh` to pull api keys from envars
+- [ ] Create key sub-generators (state, service, directive, filter?)
+- [ ] Disable Ionic view caching
 - [ ] Implement event detail view
-- [ ] Implement filter view
 - [ ] Create google maps key
+- [ ] Impmlent all events view
 
 --------------------------------------------
 
